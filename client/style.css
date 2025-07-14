@@ -1,0 +1,12 @@
+#room-list-container ul {
+    list-style: none;
+    padding: 0;
+}
+
+#room-list-container li {
+    margin: 5px 0;
+}
+
+#room-list-container button {
+    width: 100%;
+}

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> <!-- ✅ SweetAlert2 CDN -->
+</head>
+
+<body class="p-5">
+    <div class="container" style="max-width: 400px;">
+        <h2 class="text-center mb-4">Login</h2>
+        <input id="username" class="form-control mb-3" placeholder="Username" />
+        <input id="password" type="password" class="form-control mb-2" placeholder="Password" />
+        <div class="form-check mb-3">
+            <input type="checkbox" class="form-check-input" onclick="togglePassword('password')" id="showPass">
+            <label class="form-check-label" for="showPass">Hiện mật khẩu</label>
+        </div>
+        <button onclick="login()" class="btn btn-success w-100">Đăng nhập</button>
+        <p class="text-center mt-3">
+            Chưa có tài khoản? <a href="/register">Đăng ký</a>
+        </p>
+    </div>
+
+    <script>
+        const token = localStorage.getItem("token")
+        if (token) {
+            window.location.href = "/"
+        }
+
+        function togglePassword(id) {
+            const input = document.getElementById(id)
+            input.type = input.type === "password" ? "text" : "password"
+        }
+
+        async function login() {
+            const username = document.getElementById("username").value
+            const password = document.getElementById("password").value
+
+            const res = await fetch("http://localhost:5555/api/auth/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ username, password })
+            })
+
+            const data = await res.json()
+
+            if (data.success) {
+                await Swal.fire({
+                    icon: 'success',
+                    title: 'Đăng nhập thành công!',
+                    text: data.message
+                })
+
+                if (data.token) {
+                    localStorage.setItem("token", data.token)
+                }
+                window.location.href = '/'
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Lỗi!',
+                    text: data.message
+                })
+            }
+        }
+    </script>
+</body>
+
+</html>
